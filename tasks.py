@@ -4,6 +4,7 @@ from RPA.HTTP import HTTP
 from RPA.Tables import Tables
 from RPA.PDF import PDF
 from RPA.Archive import Archive
+import os
 
 
 @task
@@ -16,6 +17,7 @@ def order_robots_from_RobotSpareBin():
     Embeds the screenshot of the robot to the PDF receipt.
     Creates ZIP archive of the receipts and the images.
     """
+    _create_folders()
     open_robot_order_website()
     orders = get_orders()
     for row in orders:
@@ -26,6 +28,15 @@ def order_robots_from_RobotSpareBin():
         pdf_file = store_receipt_as_pdf(order_number)
         embed_screenshot_to_receipt(screenshot, pdf_file)
     archive_receipts()
+
+
+def _create_folders():
+    """
+    Creates output folders for screenshots and receipts.
+    """
+    if not os.path.exists("output/screenshots") and not os.path.exists("output/receipts"):
+        for folder in ["output/screenshots", "output/receipts"]:
+            os.makedirs(folder, exist_ok=True)
 
 
 def open_robot_order_website():
